@@ -85,5 +85,38 @@ export function content(config, pack) {
             else
                 trigger.player.turnOver();
         },
+        ai:{
+            effect:{
+                target: function (card, player, target) {
+                    //这里也可以用card?.hasNature?.("fengshaA",player),不过fengshaA是我自己定义的，所以不会出现fengshaA|fire这种情况。
+                    if (card.nature=="fengshaA") {
+                        return 1.5;
+                    }
+                },
+            },
+        },
+    };
+    //获得牌限制器
+    lib.skill._limitedDraw={
+        lastDo: true,
+        ruleSkill: true,
+        popup: false,
+        superCharlotte: true,
+        charlotte: true,
+        forceunique: true,
+        direct: true,
+        trigger: {
+            player: "gainBefore",
+        },
+        filter: function (event,player) {
+            const number = game.getExtensionConfig("原梗Enhanced", "limitedDraw");
+            return event.player.isIn()&&number>0&&event.cards.length>number;
+        },
+        logTarget: "player",
+        async content(event, trigger, player) {
+            trigger.cancel();
+            trigger.player.draw(game.getExtensionConfig("原梗Enhanced", "limitedDraw"));
+        },
+       
     };
 }

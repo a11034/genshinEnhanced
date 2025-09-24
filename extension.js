@@ -111,9 +111,9 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 			game.addGroup("liyue", '璃', '璃月', { color: "#b71c1c" });
 			game.addGroup("daoqi", '稻', '稻妻', { color: "#ab47bc" });
 			game.addGroup("xumi", '须', '须弥', { color: "#66bb6a" });
-			game.addGroup("zhidong", '至', '至冬', { color: "#546e7a" });	
+			game.addGroup("zhidong", '至', '至冬', { color: "#546e7a" });
 
-			
+
 			game.import('character', function (lib, game, ui, get, ai, _status) {
 				var genshinImact = {
 					name: 'GenshinImpactEnhanced',//武将包命名
@@ -154,7 +154,7 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 						qiliangliangA: ["female", "daoqi", 3, ["kuaidiA", "maobuA"], []],
 						zaoyouA: ["female", "daoqi", 3, ["toulanA", "bailanA", "jijinA"], []],
 						jiutiaoshaluoA: ["female", "daoqi", 4, ["daibuA", "yayuA"], []],
-						bachongshenziA: ["female", "daoqi", 4, ["yizhouA", "xianzhenA"], []],
+						bachongshenziA: ["female", "daoqi", 4, ["yizhouA", "xianzhenA","shenleA"], []],
 						shanhugongxinhaiA: ["female", "daoqi", "1/5/3", ["miaosuanA", "hairanA", "yuehuaA"], []],
 						wulangA: ["male", "daoqi", 4, ["cixiongA", "fujiA", "zhixinA"], []],
 						huanglongyidouA: ["male", "daoqi", 4, ["haokuaiA", "guailiA"], []],
@@ -880,7 +880,7 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 							audio: "ext:原梗Enhanced/audio/skill:2",
 							enable: "phaseUse",
 							usable: 1,
-							locked:true,
+							locked: true,
 							skillAnimation: true,
 							animationStr: "天动万象",
 							animationColor: "metal",
@@ -1681,7 +1681,7 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 							},
 							forced: true,
 							unique: true,
-							charlotte:true,
+							charlotte: true,
 							trigger: {
 								player: "useCardAfter",
 							},
@@ -3907,67 +3907,13 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 						},
 						yizhouA: {
 							audio: "ext:原梗Enhanced/audio/skill:2",
-							charlotte: true,
-							unique: true,
-							forced: true,
-							trigger: {
-								global: "gameDrawAfter",
-								source: "damageSource",
-								player: "damageEnd",
-							},
-							filter: function (event, player, name) {
-								if (name == "damageSorce" || name == "damageEnd") {
-									if (event._notrigger.includes(event.player)) return false;
-									return (event.source != player && event.source) || (event.player != player && event.player.isIn());
-								}
-								else return true;
-							},
-							content: function () {
-								'step 0'
-								if (event.triggername == "gameDrawAfter") {
-									player.addToExpansion(get.cards(player.maxHp), 'draw').gaintag.add('yizhouB');
-									event.finish();
-								}
-								else event.goto(1);
-								'step 1'
-								event.count = trigger.num;
-								event.target = trigger.source == player ? trigger.player : trigger.source;
-								if (event.target.countCards('hej') >= trigger.num) {
-									player.choosePlayerCard(event.target, trigger.num, 'hej', false, "选择" + get.translation(event.target) + "的" + event.count + "张牌", "visible")
-										.set('ai', (button) => player.getDamagedHp() > Math.floor(player.maxHp * 0.5) ? 0 : get.buttonValue(button));
-									event.goto(3);
-								}
-								else event.goto(2);
-								'step 2'
-								player.addToExpansion(get.cards(event.count), 'draw').gaintag.add('yizhouB');
-								event.finish();
-								'step 3'
-								if (result.bool)
-									player.addToExpansion(result.links, event.target, 'give').gaintag.add('yizhouB');
-								else {
-									player.recover();
-									event.finish();
-								}
-							},
-							group: ["yizhouB"],
-							ai: {
-								threaten: 0.6,
-								maixie: true,
-								maixie_defend: true,
-							},
-							"_priority": 0,
-						},
-						yizhouB: {
-							charlotte: true,
-							silent: true,
-							unique: true,
 							onremove: true,
 							mark: true,
 							marktext: "樱",
 							intro: {
 								name: "樱",
 								mark: function (dialog, content, player) {
-									var content = player.getExpansions('yizhouB');
+									var content = player.getExpansions('yizhouA');
 									if (content && content.length) {
 										if (player == game.me || player.isUnderControl()) {
 											dialog.addAuto(content);
@@ -3977,17 +3923,117 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 										}
 									}
 								},
+								markcount: "expansion",
+							},
+							charlotte: true,
+							unique: true,
+							locked: true,
+							frequent: "check",
+							check: function (event, player) {
+								return get.attitude(player, event.target) <= 0;
+							},
+							usable:5,
+							trigger: {
+								player: "useCardToPlayer",
+							},
+							filter: function (event, player, name) {
+								if (!get.tag(event.card, "damage")) return false;
+								return event.target != player && event.target.countGainableCards(event.player, "he") > 0;
+							},
+							async content(event, trigger, player) {
+								let number = player.getExpansions("yizhouA").length;
+								const result = await player.choosePlayerCard(trigger.target, [1, 3], 'he', false, "visible")
+									.set("prompt", "请选择" + get.translation(trigger.target) + "的至多三张牌")
+									.set('ai', (button) => player.maxHp <= number ? 0 : get.buttonValue(button))
+									.forResult();
+								if (result.bool) {
+									await player.addToExpansion(result.links, trigger.target, 'give').gaintag.add('yizhouA');
+								}
+								else {
+									await player.gainMaxHp();
+									await player.recover();
+								}
+
+							},
+							group: ["yizhouA_1", "yizhouB"],
+							subSkill: {
+								1:{
+									audio: "yizhouA",
+									forced:true,
+									trigger: {
+										global: "phaseBefore",
+										player: "enterGame",
+									},
+									filter: function (event, player, name) {
+										return event.name != 'phase' || game.phaseNumber == 0;
+									},
+									async content(event, trigger, player) {
+										await player.addToExpansion(get.cards(7), 'draw').gaintag.add('yizhouA');
+									},
+									sub:true,
+								},
+							},
+							ai: {
+								effect: {
+									/* player函数里a、b、c、d,a、b是对你的收益，c、d是对你使用牌的目标的收益、
+											target函数里a、b、c、d，a、b仍是对你的收益（此时你是其他人用牌的目标），c、d是对牌的使用者的收益（对你用牌的那个角色）
+											 */
+									player: function (card, player, target) {
+										if (player != target && get.tag(card, "damage")) return [1, 3];
+									},
+								},
 							},
 							"_priority": 0,
 						},
+						yizhouB: {
+							audio: "yizhouA",
+							usable: 3,
+							forced: true,
+							trigger: {
+								target: "useCardToTarget",
+							},
+							filter: function (event, player, name) {
+								if(!get.tag(event.card,"damage")) return false;
+								return event.player != player && event.targets.includes(player);
+							},
+							async content(event, trigger, player) {
+								let list = player.getExpansions("yizhouA");
+								const suitsCount = new Set(list.map(card => card.suit)).size;
+								let gainNumber = 2 * suitsCount;
+								const result = await trigger.player.chooseToDiscard(gainNumber, 'he', "请弃置" + get.cnNumber(gainNumber) + "张牌")
+												.set("prompt2","否则此牌对"+get.translation(player)+"无效且其获得此牌对应的实体牌。")
+												.forResult();
+								if (!result.bool) {
+									trigger.getParent().excluded.add(player);
+									if (trigger.cards.filterInD().length > 0)
+										await player.gain(trigger.cards.filterInD(), "gain2");
+									else await player.gain(game.createCard(trigger.card.name), "gain2")
+								}
+							},
+							ai: {
+								effect: {
+									/* player函数里a、b、c、d,a、b是对你的收益，c、d是对你使用牌的目标的收益、
+											target函数里a、b、c、d，a、b仍是对你的收益（此时你是其他人用牌的目标），c、d是对牌的使用者的收益（对你用牌的那个角色）
+											 */
+									target: function (card, player, target) {
+										let list = target.getExpansions("yizhouA");
+										const suitsCount = new Set(list.map(card => card.suit)).size;
+										let gainNumber = 2 * suitsCount;
+										if (player.countCards("he") < gainNumber) return "zerotarget";
+										return [1, 0, 1, -gainNumber];
+									},
+								},
+
+							},
+						},
 						xianzhenA: {
 							audio: "ext:原梗Enhanced/audio/skill:2",
-							popup: false,
-							usable: 3,
+							locked: true,
+							usable:(skill, player) =>player.maxHp,
 							unique: true,
 							enable: ["chooseToUse", "chooseToRespond"],
 							filter(event, player) {
-								if (!player.getExpansions('yizhouB').length > 0) return false;
+								if (!player.getExpansions('yizhouA').length > 0) return false;
 								for (var i = 0; i < lib.inpile.length; i++) {
 									var name = lib.inpile[i];
 									if (name != 'du' && get.type(name) == 'basic' && event.filterCard({ name: name, storage: { xianzhenA: true } }, player, event))
@@ -4008,7 +4054,7 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 											}
 										}
 									}
-									const dialog = ui.create.dialog('请选择一张基本牌', [list, 'vcard'], '请选择一张‘樱’', player.getExpansions('yizhouB'));
+									const dialog = ui.create.dialog('请选择一张基本牌', [list, 'vcard'], '请选择一张‘樱’', player.getExpansions('yizhouA'));
 									return dialog;
 								},
 								/**
@@ -4047,6 +4093,7 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 										viewAs: { name: links[0][2], nature: links[0][3], storage: { xianzhenA: true } },
 										precontent() {
 											event.getParent().addCount = false;
+											player.addTempSkill('xianzhenA_1');
 										},
 									};
 									return next;
@@ -4057,7 +4104,7 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 							},
 							hiddenCard: function (player, name) {
 								if (!lib.inpile.includes(name)) return false;
-								return name != "du" && get.type(name) == "basic" && player.hasExpansions("yizhouB");
+								return name != "du" && get.type(name) == "basic" && player.hasExpansions("yizhouA");
 							},
 							mod: {
 								targetInRange: function (card, player, target, now) {
@@ -4065,6 +4112,29 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 								},
 								cardUsable: function (card, player, num) {
 									if (get.type(card) == 'basic' && card.storage && card.storage.xianzhenA) return Infinity;
+								},
+							},
+							subSkill: {
+								1: {
+									direct: true,
+									locked: true,
+									trigger: {
+										player: ["useCardAfter", "respondAfter"],
+									},
+									filter: function (event, player) {
+										return event.skill == 'xianzhenA_backup' && game.hasPlayer(current => current != player);;
+									},
+									async content(event, trigger, player) {
+										const targets = await player.chooseTarget(1, true)
+											.set("filterTarget", (card, player, target) => target != player)
+											.set("prompt", "###显真###请选择一名其他角色")
+											.set("ai", (target) => -get.attitude(player, target)).forResultTargets();
+										const result = await targets[0].judge().forResult();
+										// await game.delayx();
+										if (result.color == "red") targets[0].loseHp();
+										else targets[0].damage(1, "thunder", "nosource")
+									},
+									sub: true,
 								},
 							},
 							ai: {
@@ -4093,7 +4163,7 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 								respondShan: true,
 								fireAttack: true,
 								skillTagFilter: function (player, tag, arg) {
-									return player.hasExpansions('yizhouB');
+									return player.hasExpansions('yizhouA');
 								},
 								result: {
 									/**控制技能的收益 AI必定会在该印牌时印牌
@@ -4106,8 +4176,65 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 								},
 							},
 							onremove(player, skill) {
-								var cards = player.getExpansions("yizhouB");
+								var cards = player.getExpansions("yizhouA");
 								if (cards.length) player.loseToDiscardpile(cards);
+							},
+						},
+						shenleA:{
+							audio: "ext:原梗Enhanced/audio/skill:2",
+							enable: "phaseUse",
+							usable:1,
+							locked:true,
+							animationStr:"天狐显真",
+							skillAnimation: true,
+							animationColor: "thunder",
+							selectTarget:[1,Infinity],
+							filterTarget: (card, player, target) => player != target,
+							filter(event, player) {
+								return player.maxHp > 9;
+							},
+							async content(event, trigger, player) {
+								await player.loseMaxHp(9);
+								for (const target of event.targets) {
+									let number = [1, 2].randomGet();
+									if (number == 1) await target.loseMaxHp(9);
+									else {
+										for (let i = 0; i < 9; i++) {
+											await target.damage(1, "thunder");
+											await game.delayx();
+										}
+									}
+								}
+							},
+							group:"shenleA_1",
+							subSkill:{
+								1:{
+									audio: "ext:原梗Enhanced/audio/skill:2",
+									forced: true,
+									trigger: {
+										global: "dieAfter",
+									},
+									filter: function (event, player) {
+										return event.player != player &&event.getParent(3).name=="shenleA";
+									},
+									async content(event, trigger, player) {
+										await player.gainMaxHp();
+										let gainCardNameList = lib.inpile.filter(c => get.type(c) == "trick");
+										let gainCardList = [];
+										for (var i = 0; i < 3; i++) {
+											gainCardList.push(game.createCard(gainCardNameList.randomGet()));
+										}
+										await player.gain(gainCardList, "gain2");
+									},
+									sub:true,
+								},
+							},
+							ai: {
+								order: 10,
+								threaten: 4,
+								result: {
+									target: (player, target) => -9,
+								},
 							},
 						},
 						wangyueA: {
@@ -4138,7 +4265,7 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 							audio: "ext:原梗Enhanced/audio/skill:2",
 							enable: "phaseUse",
 							usable: 3,
-							locked:true,
+							locked: true,
 							selectCard: 2,
 							filterCard: true,
 							position: "hs",
@@ -6958,30 +7085,30 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 							},
 							content: function () {
 								"step 0";
-								player.chooseControl("heart", "diamond", "club", "spade")
+								player.chooseControl(lib.suit)
 									.set("prompt", get.translation(player) + "发动了【听令】，请选择一个花色")
-									.set("ai", () => [0, 1, 2, 3].randomGet());
+									.set("ai", () => lib.suit.randomGet());
 								"step 1";
 								game.log(player, "选择了" + get.translation(result.control));
 								event.choice = result.control.slice();
-								let list = [[0, "将所有花色不为" + get.translation(event.choice) + "的牌交给" + get.translation(player)], [1, "跳过此阶段且非锁定技失效直到下你回合开始。"]];
+								let list = [[0, "将所有花色为" + get.translation(event.choice) + "的牌交给" + get.translation(player)], [1, "跳过此阶段且非锁定技失效直到下你回合开始。"]];
 								trigger.player.chooseButton(["听令：请选择一项：", [list, "textbutton"]])
 									.set("forced", true)
 									.set("selectButton", 1)
 									.set("filterButton", function (button) {
 										if (button.link == 0) {
-											return trigger.player.countCards("he", (card) => get.suit(card) != event.choice) > 0;
+											return trigger.player.countCards("he", (card) => get.suit(card) == event.choice) > 0;
 										}
 										return true;
 									})
 									.set("ai", function (button) {
-										if (button.link == 0 && trigger.player.countCards("he", (card) => get.suit(card) != event.choice) > 0) return 1;
+										if (button.link == 0 && trigger.player.countCards("he", (card) => get.suit(card) == event.choice) > 0) return 1;
 										else return Math.random();
 									})
 								"step 2"
 								if (result.bool) {
 									if (result.links[0] == 0) {
-										trigger.player.give(trigger.player.getCards("he", (card) => get.suit(card) != event.choice), player, "giveAuto");
+										trigger.player.give(trigger.player.getCards("he", (card) => get.suit(card) == event.choice), player, "giveAuto");
 										event.finish();
 									}
 									else {
@@ -10884,11 +11011,13 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 						danxiaoA: "胆小",
 						"danxiaoA_info": "锁定技，当其他角色使用【杀】指定你为目标时，若其不在你的攻击范围内，则防止此牌对你造成的伤害。",
 						yizhouA: "役咒",
-						"yizhouA_info": "锁定技,游戏开始时,你将牌堆顶的X张牌扣置于武将牌上称为“樱”(X为你的体力上限)。当你造成或受到伤害后，可以将受伤害角色/伤害来源的Y张牌放入你的武将牌上作为“樱”,(Y为造成/受到伤害值,且没有牌改为从牌堆顶获取)，否则回复一点体力。",
+						"yizhouA_info": "锁定技。①游戏开始时,你将牌堆顶的七张牌扣置于武将牌上称为“樱”。②每回合限五次，当你使用伤害类牌指定其他角色为目标时，你可以将目标角色的至多三张牌扣置于你的武将牌上称为“樱”，否则你增加1点体力上限并回复1点体力。③每回合限三次，当你成为其他角色伤害类牌的目标时，其需弃置2X张牌，否则此牌对你无效且你获得此牌对应的实体牌（X为“樱”包含的花色数）。",
 						yizhouB: "役咒",
-						"yizhouB_info": "",
+						"yizhouB_info": "每回合限三次，当你成为其他角色伤害类牌的目标时，其需弃置2X张牌，否则此牌对你无效且你获得此牌对应的实体牌（X为“樱”包含的花色数）。",
 						xianzhenA: "显真",
-						"xianzhenA_info": "每回合限三次,你可以将“樱”当作任意基本牌使用或打出,你以此法使用的基本牌无距离和次数限制.",
+						"xianzhenA_info": "每回合限Y次,你可以将一张“樱”当作无距离和次数限制的任意基本牌使用或打出，然后你令一名其他角色进行一次判定,若判定结果为：红色，其失去1点体力；黑色，其受到1点无来源的雷电伤害。（Y为你的体力上限）。",
+						shenleA:"神乐",
+						shenleA_info:"①出牌阶段限一次，若你的体力上限大于9，你可以失去9点体力上限并令任意名其他角色随机执行一项：1.失去等量体力上限；2.受到等量次1点雷电伤害。②一名角色因〖神乐〗①死亡后，你增加1点体力上限并获得三张锦囊牌。",
 						xuanjiA: "璇玑",
 						"xuanjiA_info": "锁定技，一名角色的回合开始时，你随机装备以下宝物和防具各一种（宝物：金梳、琼梳、犀梳、三略。防具：奇门八卦、国风玉袍、照月狮子盔、红棉百花袍）。",
 						yugeA: "玉阁",
@@ -11047,7 +11176,7 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 						qizhenB: "旗阵",
 						"qizhenB_info": "锁定技，你可以如手牌般使用或打出牌堆顶的前X张牌。（X为你的护甲值）",
 						tinglingA: "听令",
-						"tinglingA_info": "其他角色的出牌阶段开始前，你可以指定1种花色并令其选择一项：1.交给你不为指定花色的所有牌，2.跳过此阶段且非锁定技失效至其下回合开始。",
+						"tinglingA_info": "其他角色的出牌阶段开始前，你可以指定1种花色并令其选择一项：1.交给你指定花色的所有牌，2.跳过此阶段且非锁定技失效至其下回合开始。",
 						yirongA: "易容",
 						yirongA_info: "限定技，当你进入濒死状态时，你可以回复体力至上限，然后从所有未出场的璃月武将牌中选择一张替换之。",
 						yeyaA: "夜鸦",

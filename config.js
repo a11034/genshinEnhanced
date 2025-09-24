@@ -59,5 +59,32 @@ export let config={
             game.saveExtensionConfig('原梗Enhanced', 'changeBackground', item);
         }
     },
+    limitedDraw:{
+        name:"限制摸牌",
+        intro: "限制武将单次摸牌数量，防止因牌堆总数过多而出现超额摸牌。",
+        input:true,
+        init: "0",
+        onblur: function () {
+            // 获取并清理输入值
+            let value = this.innerText.trim();
+            // 验证是否为纯数字
+            if (!/^\d+$/.test(value)) {
+                // 如果不是纯数字，设为0（关闭功能）
+                value = "0";
+            }
+            // 转换为整数
+            let numValue = parseInt(value, 10);
+            // 验证并处理
+            if (numValue === 0) {
+                // 输入0，保持0（关闭功能）
+            } else if (numValue < 15) {
+                numValue = 15; // 小于15则设为最小值
+            } else if (numValue > 50) {
+                numValue = 50; // 大于50则设为最大值
+            }
+            this.innerText = numValue.toString();
+            game.saveExtensionConfig('原梗Enhanced', 'limitedDraw', numValue);
+        }
+    },
 };
 

@@ -55,5 +55,11 @@ export const audioText = {
     "#ext:原梗Enhanced/audio/skill/yugeA2": "你的性命，我收下了。",
     "#ext:原梗Enhanced/audio/skill/caiyuanA1": "呵，劝你放弃。",
     "#ext:原梗Enhanced/audio/skill/caiyuanA2": "别白费功夫。",
+    "#ext:原梗Enhanced/audio/skill/yizhouA1": "有什么有趣的东西吗？",
+    "#ext:原梗Enhanced/audio/skill/yizhouA2": "就只有这些吗…",
+    "#ext:原梗Enhanced/audio/skill/xianzhenA1": "显化",
+    "#ext:原梗Enhanced/audio/skill/xianzhenA2": "留形",
+    "#ext:原梗Enhanced/audio/skill/shenleA1": "雷霆侘寂！",
+    "#ext:原梗Enhanced/audio/skill/shenleA2": "真瞳显现！",
 };
 
