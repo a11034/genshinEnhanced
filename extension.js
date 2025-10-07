@@ -176,11 +176,12 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 						dixiyaA: ["female", "xumi", 4, ["shiyaoA", "youzhuA"], []],
 						dadaliyaA: ["male", "zhidong", 4, ["zanbieA", "kuanglanA", "duanliuA"], []],
 						puniA: ["male", "shen", 7, ["HunYinA"], ["bossallowed"]],
+						lanyanA:["female","liyue",4,["tengzhiA","jianwuA","yinyanA"],[]],
 					},
 					characterSort: {//武将分包
 						GenshinImpactEnhanced: {
 							ziyouzhishi: ['youlaA', 'nuoaierA', 'kaiyaA', 'anboA', 'feixieerA', 'diaonaA', 'shatangA', 'monaA', 'wendiA', 'keliA', 'dilukeA', 'qinA', 'babalaA', 'banniteA'],
-							qiyuezhiyan: ['hutaoA', 'zhongliA', 'ganyuA', 'qiqiA', 'keqingA', 'ningguangA', 'shenheA', 'yaoyaoA', 'yelanA', 'yunjinA', 'xianglingA', 'xingqiuA', 'xiaoA'],
+							qiyuezhiyan: ['hutaoA', 'zhongliA', 'ganyuA', 'qiqiA', 'keqingA', 'ningguangA', 'shenheA', 'yaoyaoA', 'yelanA', 'yunjinA', 'xianglingA', 'xingqiuA', 'xiaoA','lanyanA'],
 							leimingyongheng: ['xiaogongA', 'shenlilingrenA', 'fengyuanwanyeA', 'qiliangliangA', 'zaoyouA', 'jiutiaoshaluoA', 'bachongshenziA', 'shanhugongxinhaiA', 'wulangA', 'huanglongyidouA', 'jiuqirenA', 'leidianjiangjunA', 'shenlilinghuaA'],
 							lianaizhibing: ["dadaliyaA"],
 							zhihuizhicao: ['naxidaA', 'niluA', 'kandisiA', 'duoliA', 'kelaiA', 'tinaliA', 'sainuoA', 'laiyilaA', 'liulangzheA', 'aierhaisenA', 'kaweiA', 'falushanA', 'dixiyaA'],
@@ -246,6 +247,7 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 						dixiyaA: '横行须弥沙漠的佣兵组织“炽光猎兽”的成员，勇敢而又强大的战士，号称“炽鬃之狮”，登上了“镀金旅团”的传说实力榜前列，在“镀金旅团”内部声名赫赫，即使处于危机中也能给人带来万分的安全感。',
 						dadaliyaA: '至冬国外交使团愚人众十一执行官末席，代号“公子”，负责与璃月的外交。一个忠情战斗、忠实于身体感受的追逐者，其战绩威名远扬。',
 						puniA: "不知它来自哪里、诞生于何时，因为它的力量可以扭曲时空；它的强大让我们无法探测、无法控制，也许它只是个传说。",
+						lanyanA:"沉玉谷出身的年轻藤编师，性格开朗纯真，满身银饰如山歌般叮当作响。她技艺精湛，既能编织生动雅致的藤器，又略通奇门术法，却始终以编藤为乐。她热爱山水与小动物，心思澄澈如谷中清泉，向往更广阔的世界，却始终眷恋家乡茶香与山岚。"
 					},
 					characterTitle: {
 						puniA: "赛尔信仰·神灵",
@@ -269,7 +271,11 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 						shatangA: "无害甜度",
 						shanhugongxinhaiA: "眠龙·真珠之智",
 						fengyuanwanyeA: "叶天帝",
-						naxidaA: "白草净华"
+						naxidaA: "白草净华",
+						lanyanA:"翦玉编春"
+					},
+					characterSubstitute:{
+						fengyuanwanyeA: [["万叶1", ["ext:原梗Enhanced/other/万叶-璃月.jpg"]], ["万叶2", ["ext:原梗Enhanced/other/万叶-稻妻.jpg"]]],
 					},
 					/**@type { importCharacterConfig['skill'] } */
 					skill: {
@@ -1724,7 +1730,7 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 							ai: {
 								effect: {//牌的影响
 									player: function (card, player, target) {
-										if (card.name == "sha") {
+										if (card.name == "sha"&&player!=target) {
 											if (target.hasMark("shuangmieA_jihan")) return [1, 0, 2, -5];
 											return [1, 0, 1.5, -3];
 											/* player函数里a、b、c、d,a、b是对你的收益，c、d是对你使用牌的目标的收益、
@@ -3938,6 +3944,7 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 							},
 							filter: function (event, player, name) {
 								if (!get.tag(event.card, "damage")) return false;
+								if (player.getExpansions("yizhouA").length>=20) return false;
 								return event.target != player && event.target.countGainableCards(event.player, "he") > 0;
 							},
 							async content(event, trigger, player) {
@@ -3949,11 +3956,11 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 								if (result.bool) {
 									await player.addToExpansion(result.links, trigger.target, 'give').gaintag.add('yizhouA');
 								}
-								else {
+								else if(player.maxHp<10)
+								{
 									await player.gainMaxHp();
 									await player.recover();
-								}
-
+								}								
 							},
 							group: ["yizhouA_1", "yizhouB"],
 							subSkill: {
@@ -4016,11 +4023,14 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 											target函数里a、b、c、d，a、b仍是对你的收益（此时你是其他人用牌的目标），c、d是对牌的使用者的收益（对你用牌的那个角色）
 											 */
 									target: function (card, player, target) {
-										let list = target.getExpansions("yizhouA");
-										const suitsCount = new Set(list.map(card => card.suit)).size;
-										let gainNumber = 2 * suitsCount;
-										if (player.countCards("he") < gainNumber) return "zerotarget";
-										return [1, 0, 1, -gainNumber];
+										if(player!=target)
+										{
+											let list = target.getExpansions("yizhouA");
+											const suitsCount = new Set(list.map(card => card.suit)).size;
+											let gainNumber = 2 * suitsCount;
+											if (player.countCards("he") < gainNumber) return "zerotarget";
+											return [1, 0, 1, -gainNumber];
+										}
 									},
 								},
 
@@ -4281,7 +4291,7 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 							viewAs: {
 								name: "tianquanbengyuA",
 							},
-							prompt: "将两张牌当【天权崩玉】使用",
+							prompt: "将两张手牌当【天权崩玉】使用",
 							group: ['yugeA_1', 'yugeA_2'],
 							subSkill: {
 								"1": {
@@ -9786,7 +9796,7 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 							content: function () {
 								trigger.cancel();
 							},
-							group: "luanlanA_link",
+							group: ["luanlanA_link","luanlanA_changeSkin"],
 							subSkill: {
 								link: {
 									audio: "luanlanA",
@@ -9834,6 +9844,26 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 												if (card.name == "tiesuo") return "zeroplayertarget";
 											},
 										},
+									},
+									sub: true,
+								},
+								changeSkin:{
+									charlotte: true,
+									superCharlotte: true,
+									silent: true,
+									unique: true,
+									forceunique: true,
+									trigger: {
+										player: "changeGroupAfter",
+									},
+									filter: function (event, player, name) {
+										return player.isIn();
+									},
+									async content(event,trigger,player) {
+										// if (player.group == "liyue") player.node.avatar.setBackgroundImage("extension/原梗Enhanced/other/万叶-璃月.jpg");
+										// else player.node.avatar.setBackgroundImage("extension/原梗Enhanced/other/万叶-稻妻.jpg");
+										if (player.group == "liyue") player.changeSkin({ characterName: "fengyuanwanyeA" }, "万叶1");
+										else player.changeSkin({ characterName: "fengyuanwanyeA" }, "万叶2")
 									},
 									sub: true,
 								},
@@ -9891,7 +9921,7 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 									},
 									content: function () {
 										let list = get.discarded().filter(card => !get.tag(card, "damage"));
-										player.gain(list, "gain2");
+										player.gain(list, "draw2");
 									},
 									sub: true,
 								},
@@ -10752,6 +10782,225 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 							},
 							"_priority": 0,
 						},
+						tengzhiA:{
+							audio: "ext:原梗Enhanced/audio/skill:2",
+							forced:true,
+							trigger: {
+								global: ["phaseBegin"]
+							},
+							filter: function (event, player) {
+								return event.player.isIn() && game.hasPlayer((current) => current != player && !current.hasMark("tengzhiA_1"));
+							},
+							async content(event,trigger,player) {
+								const result = await player.chooseTarget([1, Infinity])
+									.set("filterTarget", (card, player, target) => target != player && !target.hasMark("tengzhiA_1"))
+									.set("prompt", get.prompt2("tengzhiA"))
+									.set("ai", (target) => get.attitude(player, target)).forResult();
+								if (result.bool) {
+									result.targets.sortBySeat();
+									for (let target of result.targets) {
+										target.addMark("tengzhiA_1", 1);
+									}
+								}
+							},
+							group:["tengzhiA_1","tengzhiA_2","tengzhiA_3"],
+							subSkill:{
+								1:{
+									audio: "ext:原梗Enhanced/audio/skill:2",
+									charlotte:true,
+									forced:true,
+									unique:true,
+									mark: false,
+									marktext: "藤",
+									onremove:true,
+									intro: {
+										name: "藤护",
+										content: function (storage, player,skill) {
+											return "「剪云舞影月华悠，银影翩然韵盈眸。」";
+										}
+									},
+									trigger: {
+										global: "damageBegin3",
+									},
+									filter: function (event, player) {
+										if (event.source == player || event.player == player) return false;
+										return event.player.isIn() && event.player.hasMark("tengzhiA_1") && event.num >= event.player.hp;
+									},
+									async content(event, trigger, player) {
+										trigger.player.removeMark("tengzhiA_1",1);
+										trigger.cancel();
+										await player.damage(trigger.source ? trigger.source : 'nosource', trigger.nature, trigger.num).set('card', trigger.card).set('cards', trigger.cards);
+									},
+									sub:true,
+								},
+								2:{
+									audio: "ext:原梗Enhanced/audio/skill:2",
+									forced:true,
+									trigger: {
+										player: "damageBegin3",
+									},
+									filter: function (event, player) {
+										return event.hasNature("fire");
+									},
+									async content(event, trigger, player) {
+										trigger.num++;
+									},
+									ai:{
+										effect: {
+											target: function (card, player, target, current) {
+												if (card.name == "sha") {
+													if (game.hasNature(card, "fire")) {
+														return 2;
+													}
+													if (player.hasSkill("zhuque_skill")) {
+														return 1.9;
+													}
+												}
+												if (get.tag(card, "fireDamage") && current < 0) {
+													return 2;
+												}
+											},
+										},
+									},
+									sub:true,
+								},
+								3:{
+									audio: "tengzhiA",
+									forced: true,
+									trigger: {
+										player: "damageBegin4",
+									},
+									filter: function (event, player) {
+										return !event.hasNature("fire");
+									},
+									async content(event, trigger, player) {
+										trigger.cancel();
+									},
+									ai: {
+										effect: {
+											target: function (card, player, target, current) {
+												if (!get.tag(card, "fireDamage")&&player!=target) {
+													return "zeroplayertarget";
+												}
+											},
+										},
+									},
+									sub: true,
+								},
+							},
+						},
+						jianwuA:{
+							audio: "ext:原梗Enhanced/audio/skill:2",
+							init: (player, skill) => player.changeHujia(player.maxHp),
+							forced: true,
+							trigger: {
+								source:"damageSource",
+							},
+							getIndex: function (event, player, triggername) {
+								return event.num;
+							},
+							filter: function (event, player) {
+								return event.player.isIn() && event.player!=player&&event.num;
+							},
+							async content(event, trigger, player) {
+								await player.changeHujia(1);
+							},
+							group:"jianwuA_1",
+							subSkill:{
+								1:{
+									audio: "jianwuA",
+									usable: 3,
+									forced:true,
+									trigger: {
+										player: "useCard",
+									},
+									filter: function (event, player) {
+										if (get.tag(event.card, "norepeat") ) return false;
+										return event.player.isIn() && get.tag(event.card, "damage");
+									},
+									async content(event, trigger, player) {
+										trigger.effectCount+=2;
+										game.log(trigger.card, "额外结算两次");
+									},
+									ai:{
+										effect: {
+											player: function (card, player, target, current) {
+												if (get.tag(card, "Damage")&&player!=target) {
+													return [3,0,3,0];
+												}
+											},
+										},
+									},
+									sub:true,
+								},
+							},
+							mod:{
+								targetEnabled: function (card, player, target) {
+									if (player != target&&!player.inRange(target)&&get.type(card)=="trick") return false;
+								},
+							},
+						},
+						yinyanA:{
+							audio: "ext:原梗Enhanced/audio/skill:true",
+							trigger: {
+								global: "phaseBefore",
+								player: "enterGame",
+							},
+							charlotte: true,
+							forced: true,
+							filter: function (event, player) {
+								return (event.name != "phase" || game.phaseNumber == 0) && player.hasEquipableSlot(5) && !player.getEquips("jianyuehuanA").length;
+							},
+							async content(event, trigger, player) {
+								const card = game.createCard2("jianyuehuanA", "heart", 6);
+								player.$gain2(card, false);
+								await game.delayx();
+								await player.equip(card);
+							},
+							group: "yinyanA_blocker",
+							subSkill: {
+								blocker: {
+									trigger: {
+										player: ["loseBefore", "disableEquipBefore"],
+									},
+									forced: true,
+									filter: function (event, player) {
+										if (event.name == "disableEquip") return event.slots.includes("equip5");
+										let cards = player.getEquips("jianyuehuanA");
+										return event.cards.some(card => cards.includes(card));
+									},
+									async content(event, trigger, player) {
+										if (trigger.name == "lose") {
+											trigger.cards.removeArray(player.getEquips("jianyuehuanA"));
+										} else {
+											while (trigger.slots.includes("equip5")) trigger.slots.remove("equip5");
+										}
+									},
+									sub: true,
+								},
+							},
+							mod: {
+								canBeGained(card, source, player) {
+									if (player.getEquips("jianyuehuanA").includes(card)) return false;
+								},
+								canBeDiscarded(card, source, player) {
+									if (player.getEquips("jianyuehuanA").includes(card)) return false;
+								},
+								canBeReplaced(card, player) {
+									if (player.getVEquips("jianyuehuanA").includes(card)) return false;
+								},
+								cardname(card,player) {
+									if (get.subtype(card, false) == "equip5") return "dongzhuxianji";
+								},
+								cardDiscardable(card, player) {
+									if (player.getEquips("jianyuehuanA").includes(card)) return false;
+								},
+								cardEnabled2(card, player) {
+									if (player.getEquips("jianyuehuanA").includes(card)) return false;
+								},
+							},
+							"_priority": 0,
+						}
 					},
 					translate: {//各种技能的翻译，不写等着全是英文吧
 						//势力部分
@@ -10822,6 +11071,7 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 						dixiyaA: "迪希雅",
 						puniA: "谱尼",
 						banniteA: "班尼特",
+						lanyanA:"蓝砚",
 						//技能部分
 						...audioText,
 						HunYinA: "神明",
@@ -11011,7 +11261,7 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 						danxiaoA: "胆小",
 						"danxiaoA_info": "锁定技，当其他角色使用【杀】指定你为目标时，若其不在你的攻击范围内，则防止此牌对你造成的伤害。",
 						yizhouA: "役咒",
-						"yizhouA_info": "锁定技。①游戏开始时,你将牌堆顶的七张牌扣置于武将牌上称为“樱”。②每回合限五次，当你使用伤害类牌指定其他角色为目标时，你可以将目标角色的至多三张牌扣置于你的武将牌上称为“樱”，否则你增加1点体力上限并回复1点体力。③每回合限三次，当你成为其他角色伤害类牌的目标时，其需弃置2X张牌，否则此牌对你无效且你获得此牌对应的实体牌（X为“樱”包含的花色数）。",
+						"yizhouA_info": "锁定技。①游戏开始时,你将牌堆顶的七张牌扣置于武将牌上称为“樱”。②每回合限五次，当你使用伤害类牌指定其他角色为目标时，若“樱”数小于20，你可以将目标角色的至多三张牌扣置于你的武将牌上称为“樱”，若你未扣置牌且体力上限小于10，你增加1点体力上限并回复1点体力。③每回合限三次，当你成为其他角色伤害类牌的目标时，其需弃置2X张牌，否则此牌对你无效且你获得此牌对应的实体牌（X为“樱”包含的花色数）。",
 						yizhouB: "役咒",
 						"yizhouB_info": "每回合限三次，当你成为其他角色伤害类牌的目标时，其需弃置2X张牌，否则此牌对你无效且你获得此牌对应的实体牌（X为“樱”包含的花色数）。",
 						xianzhenA: "显真",
@@ -11352,7 +11602,7 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 						chirenA: "赤刃",
 						chirenA_info: "璃月技，锁定技，①判定/弃牌阶段开始时，你可以跳过此阶段，视为使用一张无次数、距离限制，且可以指定任意名目标的" + get.ygeBolInformX("风【杀】", "出牌阶段，对你攻击范围内的一名角色使用。其须使用一张【闪】，否则你对其造成1点伤害，然后其随机执行一项：①翻面；②弃置所有牌。") + "。②一名其他角色的回合结束时，你获得本回合进入弃牌堆的非伤害类牌。",
 						kongjingA: "空净",
-						kongjingA_info: "稻妻技，①每回合限五次，当其他角色使用普通锦囊牌或带有「伤害」标签的基本牌指定你为目标时，其需交给你一张类型、花色均相同的牌，否则你令此牌无效并获得其一张牌。②锁定技，其他角色无法使用延时锦囊牌指定你为目标。③一名角色的回合结束时，若你本回合未受到过伤害，则你将手牌摸至X张。（X为全场已横置角色数和你的体力上限间的较大值）",
+						kongjingA_info: "稻妻技，①每回合限五次，当其他角色使用普通锦囊牌或带有「伤害」标签的基本牌指定你为目标时，其需交给你一张类型、花色均相同的牌，否则你令此牌无效并获得其一张牌。②锁定技，其他角色无法使用延时锦囊牌指定你为目标。③锁定技，一名角色的回合结束时，若你本回合未受到过伤害，则你将手牌摸至X张。（X为全场已横置角色数和你的体力上限间的较大值）",
 						exiA: "恶戏",
 						"exiA_info": "出牌阶段限一次，你可以令一名其他角色视为对你使用一张【决斗】。",
 						menghunA: "蒙混",
@@ -11401,6 +11651,12 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 						"eyunA_info": "①锁定技，当你成为其他角色使用牌的目标后，此牌有50%的概率失效且你随机弃置一张牌。②锁定技，无〖焰魂〗的其他角色的回合开始时，随机进行下列可执行项：1.进行【闪电】判定；2.进行【乐不思蜀】判定；3.受到1点无来源的火焰伤害。",
 						yanhunA: "焰魂",
 						"yanhunA_info": "①锁定技，当你对一名其他角色造成伤害时，你选择一项：①令所有拥有〖焰魂〗的角色摸2X张牌并恢复X+1点体力。（X为伤害值）②令此伤害值翻倍。",
+						tengzhiA:"藤织",
+						tengzhiA_info: "①一名角色的回合开始时，你可以令任意名其他角色各获得一枚“藤护”标记。②拥有“藤护”的其他角色受到致命伤害时，若你不为伤害来源，则其移除一枚“藤护”并将此伤害转移给你。③锁定技，你免疫非火焰伤害且受到的火焰伤害+1。",
+						jianwuA:"翦舞",
+						jianwuA_info: "锁定技。①你初始拥有4点护甲。当你对其他角色造成1点伤害后，你获得1点护甲。②每回合限三次，当你使用伤害类牌时，此牌额外结算两次。③你攻击范围外的其他角色无法使用普通锦囊牌指定你为目标。",
+						yinyanA:"银燕",
+						yinyanA_info:"锁定技。①游戏开始时，你将【翦月环】置入装备区。②你即将失去【翦月环】或废除宝物栏时，取消之。③你不能将装备区内的【翦月环】当作其他牌使用或打出。④你手牌区内的宝物牌均视为【洞烛先机】。"
 					},
 				};
 				for (var i in genshinImact.character) {
@@ -12284,6 +12540,55 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 							},
 							toself: true,
 						},
+						jianyuehuanA:{
+							fullskin: true,
+							image: "ext:原梗Enhanced/image/card/翦月环.png",
+							type: "equip",
+							subtype: "equip5",
+							skills: ["jianyuehuanA_skill_1", "jianyuehuanA_skill_2"],
+							ai: {
+								basic: {
+									equipValue: 3,
+									order: (card, player) => {
+										const equipValue = get.equipValue(card, player) / 20;
+										return player && player.hasSkillTag("reverseEquip") ? 8.5 - equipValue : 8 + equipValue;
+									},
+									useful: 2,
+									value: (card, player, index, method) => {
+										if (!player.getCards("e").includes(card) && !player.canEquip(card, true)) return 0.01;
+										const info = get.info(card),
+											current = player.getEquip(info.subtype),
+											value = current && card != current && get.value(current, player);
+										let equipValue = info.ai.equipValue || info.ai.basic.equipValue;
+										if (typeof equipValue == "function") {
+											if (method == "raw") return equipValue(card, player);
+											if (method == "raw2") return equipValue(card, player) - value;
+											return Math.max(0.1, equipValue(card, player) - value);
+										}
+										if (typeof equipValue != "number") equipValue = 0;
+										if (method == "raw") return equipValue;
+										if (method == "raw2") return equipValue - value;
+										return Math.max(0.1, equipValue - value);
+									},
+								},
+								result: {
+									target: (player, target, card) => get.equipResult(player, target, card.name),
+								},
+							},
+							equipDelay: false,
+    						loseDelay: false,
+							enable: true,
+							selectTarget: -1,
+							filterTarget: (card, player, target) => player == target && target.canEquip(card, true),
+							modTarget: true,
+							allowMultiple: false,
+							content: function () {
+								if (!card?.cards.some(card => get.position(card, true) !== "o")) {
+									target.equip(card);
+								}
+							},
+							toself: true,
+						},
 					},
 					skill: {
 						lianjin_zhuoshao: {
@@ -12346,7 +12651,7 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 							filter: function (event, player) {
 								if (!["trick", "basic"].includes(get.type(event.card))) return false;
 								if (get.tag(event.card, "norepeat") || _status.currentPhase != player) return false;
-								return event.player.isIn() && player.getLastUsed() != null;
+								return event.player.isIn();
 							},
 							prompt2: function (event, player) {
 								let num = player.getHistory('useSkill', evt => evt.skill == 'jilijianA_skill').length;
@@ -12652,6 +12957,39 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 								},
 							},
 						},
+						jianyuehuanA_skill_1: {
+							equipSkill: true,
+							forced: true,
+							trigger: {
+								player: ["loseHpBegin", "loseMaxHpBegin","phaseJudgeBefore"]
+							},
+							filter: function (event, player) {
+								return event.player.isIn();
+							},
+							async content(event, trigger, player) {
+								trigger.cancel();
+							},
+							ai: {
+								effect: {
+									target: function (card, player, target) {
+										if (get.type(card)=="delay") return "zeroplayertarget";
+									},
+								},
+							},
+						},
+						jianyuehuanA_skill_2: {
+							equipSkill: true,
+							forced: true,
+							trigger: {
+								source: "damageBegin1",
+							},
+							filter: function (event, player) {
+								return event.player.isIn() &&event.player!=player;
+							},
+							async content(event, trigger, player) {
+								game.setNature(trigger, "fengshaA", true);
+							},
+						},
 					},
 					translate: {//卡牌的翻译，不写的话游戏里可能无法加载出来
 						tianquanbengyuA: "天权崩玉",
@@ -12680,6 +13018,10 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 						amosizhigongA: "阿莫斯之弓",
 						amosizhigongA_info: "①锁定技，你使用【杀】无次数限制。②锁定技，当你使用伤害类牌时，此牌的基础伤害增加2点。③锁定技，你不是其他角色使用带有「伤害」标签的普通锦囊牌和普通【杀】的合法目标。",
 						amosizhigongA_append: `<div style="width:100%;text-align:left;font-size:13px;font-style:italic">极为古老的弓。即使原主不复存在，其中蕴藏之力依旧——那种力量无主，却在万物当中。距离心系之物越是遥远，那种力量愈是剧烈。</div>`,
+						amosizhigongA_skill:"阿莫斯之弓",
+						jianyuehuanA:"翦月环",
+						jianyuehuanA_info:"锁定技。①当你对其他角色造成伤害时，此伤害追加风属性。②你不会失去体力和体力上限。③你始终跳过判定阶段。",
+						jianyuehuanA_append: `<div style="width:100%;text-align:left;font-size:13px;font-style:italic">燕子来时挟清雨，能洗旧冬一点愁。</div>`,
 						delicacies: "佳肴",
 						xiantiaoqiangA: "仙跳墙",
 						xiantiaoqiangA_effect: "仙跳墙",

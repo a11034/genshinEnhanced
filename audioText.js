@@ -24,6 +24,7 @@ export const audioText = {
     "#banniteA:die": "没能突破…厄运的封锁…",
     "#shatangA:die": "研究…又失败了…",
     "#naxidaA:die": "我…不明白…",
+    "#lanyanA:die": "银铃…不响了…",
     //技能语音文本
     "#ext:原梗Enhanced/audio/skill/ranhuaA1": "你很有眼光嘛！",
     "#ext:原梗Enhanced/audio/skill/ranhuaA2": "哦？该我出马了？",
@@ -61,5 +62,14 @@ export const audioText = {
     "#ext:原梗Enhanced/audio/skill/xianzhenA2": "留形",
     "#ext:原梗Enhanced/audio/skill/shenleA1": "雷霆侘寂！",
     "#ext:原梗Enhanced/audio/skill/shenleA2": "真瞳显现！",
+    "#ext:原梗Enhanced/audio/skill/tengzhiA1": "搬疾运厄",
+    "#ext:原梗Enhanced/audio/skill/tengzhiA2": "玄燕传喜",
+    "#ext:原梗Enhanced/audio/skill/jianwuA1": "「燕衔泥，莫与齐」，哼，别小瞧我哟",
+    "#ext:原梗Enhanced/audio/skill/jianwuA2": "我的实力一路增长，如今要保护你也算绰绰有余了吧。",
+    "#ext:原梗Enhanced/audio/skill/yinyanA": "天暖燕子么搭窝窝，升雷扯闪么我家躲。",
+    "#ext:原梗Enhanced/audio/skill/tengzhiA_11": "不能硬撑了，快撤下来！",
+    "#ext:原梗Enhanced/audio/skill/tengzhiA_12": "换我来吧，他们抓不住我",
+    "#ext:原梗Enhanced/audio/skill/tengzhiA_21": "不对头！",
+    "#ext:原梗Enhanced/audio/skill/tengzhiA_22": "脾气真差！",
 };
 

@@ -15,7 +15,7 @@ export function content(config, pack) {
             epic: [
                 'hutaoA', 'ningguangA', 'bachongshenziA', 'keqingA',
                 'zhongliA', 'wendiA', 'leidianjiangjunA', 'shatangA',
-                'xianglingA', 'anboA', 'banniteA', 'xiaoA','naxidaA'
+                'xianglingA', 'anboA', 'banniteA', 'xiaoA','naxidaA',"lanyanA"
             ],
             // 传说武将
             legend: [

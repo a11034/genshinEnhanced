@@ -21,6 +21,13 @@ export let config={
     /**
      * 扩展设置提示
      */
+    copyGit: {
+        name: '一键复制<span style="color: #FFFF00">GitHub</span><span style="color: #00FFFF">仓库链接</span>',
+        clear: true,
+        onclick() {
+            game.copy('https://github.com/a11034/genshinEnhanced', '链接已复制到剪贴板!');
+        },
+    },
     miniFeature: {
         name: "<font color=#ed7e78><————扩展小功能————></font></a>",
         clear: true,
@@ -85,6 +92,6 @@ export let config={
             this.innerText = numValue.toString();
             game.saveExtensionConfig('原梗Enhanced', 'limitedDraw', numValue);
         }
-    },
+    }, 
 };
 
