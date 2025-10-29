@@ -71,5 +71,12 @@ export const audioText = {
     "#ext:原梗Enhanced/audio/skill/tengzhiA_12": "换我来吧，他们抓不住我",
     "#ext:原梗Enhanced/audio/skill/tengzhiA_21": "不对头！",
     "#ext:原梗Enhanced/audio/skill/tengzhiA_22": "脾气真差！",
+    "#ext:原梗Enhanced/audio/skill/nuomianA1": "荒野上的孤魂，休想伤我分毫！",
+    "#ext:原梗Enhanced/audio/skill/nuomianA2": "哼，不敬仙师！",
+    "#ext:原梗Enhanced/audio/skill/yezhangA1": "悲鸣吧！",
+    "#ext:原梗Enhanced/audio/skill/yezhangA2": "别妨碍我！",
+    "#ext:原梗Enhanced/audio/skill/xiangmoA1": "力量的尽头,是自我毁灭。回答我，为何如此执着呢？",
+    "#ext:原梗Enhanced/audio/skill/jingyaoA1": "靖妖傩舞！",
+    "#ext:原梗Enhanced/audio/skill/jingyaoA2": "就此消失！",
 };
 

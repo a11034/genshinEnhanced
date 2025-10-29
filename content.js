@@ -1,5 +1,5 @@
 import { lib, game, ui, get, ai, _status } from '../../noname.js';
-
+import { configData } from './config.js';
 export function content(config, pack) {
     //---------------------------------------设置：武将评级------------------------------------------//
     /*武将评级*/
@@ -15,11 +15,11 @@ export function content(config, pack) {
             epic: [
                 'hutaoA', 'ningguangA', 'bachongshenziA', 'keqingA',
                 'zhongliA', 'wendiA', 'leidianjiangjunA', 'shatangA',
-                'xianglingA', 'anboA', 'banniteA', 'xiaoA','naxidaA',"lanyanA"
+                'xianglingA', 'anboA', 'banniteA', 'xiaoA', 'naxidaA', "lanyanA", 'shenlilingrenA'
             ],
             // 传说武将
             legend: [
-                'shenlilinghuaA', 'shenlilingrenA', 'qiqiA', 'youlaA',
+                'shenlilinghuaA',  'qiqiA', 'youlaA',
                 'ganyuA', 'puniA', 'xingqiuA', 'shanhugongxinhaiA', 'yunjinA', 'fengyuanwanyeA'
             ]
         };
@@ -62,7 +62,7 @@ export function content(config, pack) {
     });
     lib.inpile_nature.add("fengshaA");
     // lib.natureAudio.damage.fengshaA = 'normal';
-    lib.translate['sha_nature_fengshaA_info'] = '出牌阶段，对你攻击范围内的一名角色使用。其须使用一张【闪】，否则你对其造成1点伤害，然后其随机执行一项：①翻面；②弃置所有牌。';
+    lib.translate['sha_nature_fengshaA_info'] = configData.customText.fengshaA;
     lib.skill._fengshaA = {
         lastDo: true,
         ruleSkill: true,
@@ -83,7 +83,7 @@ export function content(config, pack) {
             if (damageNum == 1)
                 trigger.player.discard(trigger.player.getCards("he"));
             else
-                trigger.player.turnOver();
+                trigger.player.classList.add('turnedover');
         },
         ai:{
             effect:{
