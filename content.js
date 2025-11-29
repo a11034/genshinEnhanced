@@ -20,7 +20,7 @@ export function content(config, pack) {
             // 传说武将
             legend: [
                 'shenlilinghuaA',  'qiqiA', 'youlaA',
-                'ganyuA', 'puniA', 'xingqiuA', 'shanhugongxinhaiA', 'yunjinA', 'fengyuanwanyeA'
+                'ganyuA', 'puniA', 'xingqiuA', 'shanhugongxinhaiA', 'yunjinA', 'fengyuanwanyeA','keliA'
             ]
         };
 
