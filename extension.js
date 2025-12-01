@@ -2812,49 +2812,43 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 						},
 						lianzhenA: {
 							audio: "ext:原梗Enhanced/audio/skill:2",
-							frequent: true,
+							forced: true,
+							locked: false,
 							trigger: {
 								player: "damageBegin4",
 							},
-							check: function (event, player) {
-								let enemyNum = game.countPlayer((current) => current.isLinked() && get.attitude(player, current) <= 0);
-								let friendNum = game.countPlayer((current) => current.isLinked() && get.attitude(player, current) > 0);
-								if (player.countCards("he") > 0) return true;
-								else {
-									if (event.num && enemyNum < friendNum && event.player.isLinked()) return false;
-									else return true;
-								};
+							filter: function (event, player) {
+								return event.num > 0;;
 							},
-							content: function () {
-								'step 0'
-								var num = trigger.num;//num为伤害值
-								if (player.countCards('he') >= num) {
-									player.chooseToDiscard('he', num, "请弃置" + get.cnNumber(num) + "张牌").set("ai", card => {
-										// 计算卡牌的弃牌价值，考虑手牌数量和玩家体力
-										const discardValue = 24 - 5 * player.countCards('h') - 2 * Math.min(4, player.hp) - get.value(card);
-										// 如果玩家手牌较少或体力较低，优先保留高价值牌
-										if (player.countCards('h') < 4 || player.hp < 3) {
-											return discardValue + 10; // 增加保留高价值牌的倾向
-										}
-										// 默认情况下，根据计算的弃牌价值来决定
-										return discardValue;
-									});
+							async content(event, trigger, player) {
+								if(player.countCards("he")>=trigger.num)
+								{
+									let result = await player.chooseToDiscard('he', trigger.num)
+										.set("prompt", "###廉贞###请弃置" + get.cnNumber(trigger.num) + "张牌")
+										.set("ai", card => {
+											// 计算卡牌的弃牌价值
+											const player = get.player();
+											const discardValue = ui.selected.cards.reduce((sum, card) => sum + get.value(card, player), 0) + get.value(card, player) * (player.hp / player.maxHp);
+											const damageEffect = get.damageEffect(player, trigger.source, player, trigger.nature) * trigger.num;
+											return Math.max(0, (-damageEffect) - discardValue);;
+										}).forResult();
+									if (result.bool) trigger.cancel();
 								}
-								else event.goto(2);
-								'step 1'
-								if (result.bool) trigger.cancel();
-								event.finish();
-								'step 2'
-								trigger.cancel();
-								player.loseHp();
-								player.link(false);
-								player.turnOver(false);
+								else 
+								{
+									trigger.cancel();
+									await player.loseHp();
+									await player.link(false);
+									await player.turnOver(false);
+								}
 							},
 							ai: {
-								nodamage: true,
 								threaten: 0.7,
-								skillTagFilter: function (player, tag, arg) {//技能标签限制条件
-									if (player.countCards("he") <= 0) return false;
+								effect: {
+									target: function (card, player, target) {
+										if (player.hasSkillTag("jueqing", false, target)) return;//如果使用者有“绝情”标签，无视该技能。特殊标签，不是常规标签，不加也没问题
+										if (get.tag(card, "damage") && target.countCards("he")>0) return [0, 0];
+									},
 								},
 							},
 							"_priority": 0,
