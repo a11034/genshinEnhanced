@@ -78,5 +78,11 @@ export const audioText = {
     "#ext:原梗Enhanced/audio/skill/xiangmoA1": "力量的尽头,是自我毁灭。回答我，为何如此执着呢？",
     "#ext:原梗Enhanced/audio/skill/jingyaoA1": "靖妖傩舞！",
     "#ext:原梗Enhanced/audio/skill/jingyaoA2": "就此消失！",
+    "#ext:原梗Enhanced/audio/skill/huohuaA1": "轰轰火花！",
+    "#ext:原梗Enhanced/audio/skill/huohuaA2": "蹦蹦炸弹！",
+    "#ext:原梗Enhanced/audio/skill/baodanA1": "火力全开！",
+    "#ext:原梗Enhanced/audio/skill/baodanA2": "全——都可以炸完！",
+    "#ext:原梗Enhanced/audio/skill/tianjuanA1": "亮闪闪的，好开心！",
+    "#ext:原梗Enhanced/audio/skill/tianjuanA2": "可莉又找到新的宝物啦！",
 };
 
