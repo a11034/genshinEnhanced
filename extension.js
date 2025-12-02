@@ -1881,7 +1881,7 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 									},
 									async cost(event, trigger, player) {
 										//将选择目标的部分写在cost里面，这样让玩家在选择目标的时候，实际上并没有进入content之中，即使你没有选择目标，也不占用每回合限两次的技能使用次数	
-										const result = await player.chooseToDiscard("弃置一张牌并防止此伤害", "he", true)
+										const result = await player.chooseToDiscard("弃置一张牌并防止此伤害", "he")
 											.set("ai", (card) => 10 - get.value(card))
 											.forResult();
 										if (result.bool) { event.result = result; }
@@ -12969,7 +12969,7 @@ game.import("extension", function (lib, game, ui, get, ai, _status) {
 		}, help: {},
 		config: config,
 		package: {
-			intro: "<li>(｡･∀･)ﾉﾞhello，" + lib.config.connect_nickname + "！欢迎体验《原梗Enhanced》扩展！版本号：0.1.8"
+			intro: "<li>(｡･∀･)ﾉﾞhello，" + lib.config.connect_nickname + "！欢迎体验《原梗Enhanced》扩展！版本号：0.1.9"
 				+ "<li>本扩展由BilibiliUP主“不明围观”的《原梗扩展》授权更改而来。强度及格线为十周年神张飞，建议开启“仅点将可用”。"
 				+ "<li>图片素材来自网络，若有侵权请联系作者删除。"
 				+ "<li>下方为扩展交流群，如遇扩展bug或者有更好的技能设计思路，欢迎进群交流讨论！"
