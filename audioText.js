@@ -25,6 +25,8 @@ export const audioText = {
     "#shatangA:die": "研究…又失败了…",
     "#naxidaA:die": "我…不明白…",
     "#lanyanA:die": "银铃…不响了…",
+    "#keliA:die": "可莉…想回家了…",
+    "#huanglongyidouA:die": "倒下的姿势…得帅才行…",
     //技能语音文本
     "#ext:原梗Enhanced/audio/skill/ranhuaA1": "你很有眼光嘛！",
     "#ext:原梗Enhanced/audio/skill/ranhuaA2": "哦？该我出马了？",
@@ -84,5 +86,18 @@ export const audioText = {
     "#ext:原梗Enhanced/audio/skill/baodanA2": "全——都可以炸完！",
     "#ext:原梗Enhanced/audio/skill/tianjuanA1": "亮闪闪的，好开心！",
     "#ext:原梗Enhanced/audio/skill/tianjuanA2": "可莉又找到新的宝物啦！",
+    "#ext:原梗Enhanced/audio/skill/dueA1": "玉签，仙法开匣！",
+    "#ext:原梗Enhanced/audio/skill/dueA2": "要活下去…",
+    "#ext:原梗Enhanced/audio/skill/yanmingA1": "流转不息。",
+    "#ext:原梗Enhanced/audio/skill/yanmingA2": "生生不绝。",
+    "#ext:原梗Enhanced/audio/skill/huihaiA1": "听诏，宣此诰命！",
+    "#ext:原梗Enhanced/audio/skill/huihaiA2": "真名，度厄真君！",
+    "#ext:原梗Enhanced/audio/skill/haoyongA1": "做好全盘皆输的准备吧！哈哈哈哈！",
+    "#ext:原梗Enhanced/audio/skill/haoyongA2": "哈哈哈哈，那么，下一刀，本大爷替你挡了！",
+    "#ext:原梗Enhanced/audio/skill/haoyongA3": "喔喔，就是这样就是这样！力气更大了！",
+    "#ext:原梗Enhanced/audio/skill/guiwangA1": "哈哈，到我表演了！",
+    "#ext:原梗Enhanced/audio/skill/guiwangA2": "鬼王游行，通通闪开！",
+    "#ext:原梗Enhanced/audio/skill/langgeA1": "本大爷果然运气超凡！",
+    "#ext:原梗Enhanced/audio/skill/langgeA2": "哈哈哈哈",
 };
 

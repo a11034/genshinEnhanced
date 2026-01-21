@@ -15,7 +15,7 @@ export function content(config, pack) {
             epic: [
                 'hutaoA', 'ningguangA', 'bachongshenziA', 'keqingA',
                 'zhongliA', 'wendiA', 'leidianjiangjunA', 'shatangA',
-                'xianglingA', 'anboA', 'banniteA', 'xiaoA', 'naxidaA', "lanyanA", 'shenlilingrenA'
+                'xianglingA', 'anboA', 'banniteA', 'xiaoA', 'naxidaA', "lanyanA", 'shenlilingrenA','huanglongyidouA'
             ],
             // 传说武将
             legend: [
@@ -106,14 +106,15 @@ export function content(config, pack) {
         forceunique: true,
         direct: true,
         trigger: {
-            player: "gainBefore",
+            player: "drawBefore",
         },
         filter: function (event,player) {
             const number = game.getExtensionConfig("原梗Enhanced", "limitedDraw");
-            return event.player.isIn()&&number>0&&event.cards.length>number;
+            return event.player.isIn()&&number>0&&event.num>number;
         },
         logTarget: "player",
         async content(event, trigger, player) {
+            game.log(get.translation(trigger.player)+"摸的牌太多了！禁止暴力摸牌！");
             trigger.cancel();
             trigger.player.draw(game.getExtensionConfig("原梗Enhanced", "limitedDraw"));
         },
