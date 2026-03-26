@@ -60,6 +60,7 @@ export function content(config, pack) {
         lineColor: "#4ECDC4",
         color: "#4ECDC4",
     });
+    
     lib.inpile_nature.add("fengshaA");
     // lib.natureAudio.damage.fengshaA = 'normal';
     lib.translate['sha_nature_fengshaA_info'] = configData.customText.fengshaA;
@@ -118,6 +119,5 @@ export function content(config, pack) {
             trigger.cancel();
             trigger.player.draw(game.getExtensionConfig("原梗Enhanced", "limitedDraw"));
         },
-       
     };
 }
