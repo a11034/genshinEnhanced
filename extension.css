@@ -125,3 +125,143 @@
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
 }
 /* --------------------超链接文本提示框样式（结束）------------------------- */
+
+
+/* --------------------雷伊“麻痹”状态动画（开始）------------------------- */
+/* 定义触电/麻痹的晃动关键帧 */
+/* 1. 基础晃动动画 */
+@keyframes paralysis-shake-animation {
+    0% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+
+    20% {
+        transform: translate(-3px, 0) rotate(-4deg);
+    }
+
+    40% {
+        transform: translate(3px, 0) rotate(4deg);
+    }
+
+    60% {
+        transform: translate(-1px, 0) rotate(-2deg);
+    }
+
+    80% {
+        transform: translate(1px, 0) rotate(2deg);
+    }
+
+    100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+}
+
+/* 触发类：仅负责让父元素（武将卡）晃动 */
+.trigger-paralysis-shake {
+    animation: paralysis-shake-animation 0.5s ease-in-out;
+    transform-origin: center bottom;
+}
+
+/* ================= 2. 特效容器层 ================= */
+.paralysis-effect-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    /* 绝对穿透，不阻挡点击 */
+    z-index: 200 !important;
+    border-radius: inherit;
+    overflow: hidden;
+    /* 核心：用于裁剪超出边界的SVG电环，形成3D绕后感 */
+    /* 保留一层微弱的全局环境金光闪烁 */
+    animation: paralysis-bg-flicker 0.15s infinite;
+    box-sizing: border-box;
+    border: 1px solid rgba(255, 215, 0, 0.4);
+}
+
+/* 微弱的环境电火花底光 */
+@keyframes paralysis-bg-flicker {
+
+    0%,
+    100% {
+        background-color: rgba(255, 255, 0, 0.05);
+    }
+
+    50% {
+        background-color: rgba(255, 215, 0, 0.15);
+        box-shadow: inset 0 0 15px rgba(255, 215, 0, 0.4);
+    }
+}
+
+/* ================= 3. SVG 环状电流核心样式 ================= */
+.paralysis-svg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* 所有电流路径的通用样式 */
+.electric-ring {
+    fill: none;
+    /* 透明内部，只有描边 */
+    stroke: url(#gold-lightning-gradient);
+    /* 使用 SVG 内定义的白金渐变 */
+    stroke-linecap: round;
+    /* 圆润的电流头部 */
+    /* 利用 CSS 滤镜打造强烈的电光发光效果 */
+    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.9)) drop-shadow(0 0 6px rgba(255, 215, 0, 0.8));
+}
+
+/* 分别定义几条缠绕环的虚线长度和流速 */
+/* stroke-dasharray:[实线长度] [空白长度]; */
+.ring1 {
+    stroke-dasharray: 40 150;
+    stroke-width: 3;
+    animation: electric-flow 0.7s linear infinite;
+}
+
+.ring2 {
+    stroke-dasharray: 60 200;
+    stroke-width: 2;
+    /* 辅环稍微细一点 */
+    animation: electric-flow-reverse 0.6s linear infinite;
+}
+
+.ring3 {
+    stroke-dasharray: 50 160;
+    stroke-width: 3.5;
+    animation: electric-flow 0.85s linear infinite;
+}
+
+/* 一条贯穿卡牌的垂直蛇形电流 */
+.ring4 {
+    stroke-dasharray: 70 120;
+    stroke-width: 2.5;
+    animation: electric-flow-reverse 1s linear infinite;
+}
+
+/* 虚线偏移量动画：实现电流不断往前流动的视觉 */
+@keyframes electric-flow {
+    from {
+        stroke-dashoffset: 0;
+    }
+
+    to {
+        stroke-dashoffset: -300;
+    }
+}
+
+@keyframes electric-flow-reverse {
+    from {
+        stroke-dashoffset: 0;
+    }
+
+    to {
+        stroke-dashoffset: 300;
+    }
+}
+/* --------------------雷伊“麻痹”状态动画（结束）------------------------- */

@@ -60,10 +60,19 @@ export function content(config, pack) {
         lineColor: "#4ECDC4",
         color: "#4ECDC4",
     });
+    game.addNature("chenshaA", "<font color=#e9aa25>岩</font>", {
+        audio: { damage: { chenshaA: ["", `${baseAudioPath}chenshaA1.mp3`, `${baseAudioPath}chenshaA2.mp3`] } },
+        linked: true,
+        order: 60,
+        background: "extension/原梗Enhanced/image/mark/chensha.png",
+        lineColor: "#e9aa25",
+        color: "#e9aa25",
+    });
     
-    lib.inpile_nature.add("fengshaA");
-    // lib.natureAudio.damage.fengshaA = 'normal';
+    if (game.getExtensionConfig("原梗Enhanced", "natureAdd")) lib.inpile_nature.addArray(["fengshaA","chenshaA"]);
+
     lib.translate['sha_nature_fengshaA_info'] = configData.customText.fengshaA;
+    lib.translate['sha_nature_chenshaA_info'] = configData.customText.chenshaA;
     lib.skill._fengshaA = {
         lastDo: true,
         ruleSkill: true,
@@ -79,9 +88,8 @@ export function content(config, pack) {
             return event.hasNature("fengshaA") && event.player.isIn();
         },
         logTarget: "player",
-        async content(event,trigger,player) {
-            let damageNum = [1, 2].randomGet();
-            if (damageNum == 1)
+        async content(event, trigger, player) {
+            if (trigger.player.hp <= trigger.player.countCards("h"))
                 trigger.player.discard(trigger.player.getCards("he"));
             else
                 trigger.player.classList.add('turnedover');
@@ -92,6 +100,55 @@ export function content(config, pack) {
                     //这里也可以用card?.hasNature?.("fengshaA",player),不过fengshaA是我自己定义的，所以不会出现fengshaA|fire这种情况。
                     if (card.nature=="fengshaA") {
                         return 1.5;
+                    }
+                },
+            },
+        },
+    };
+    lib.skill._chenshaA = {
+        lastDo: true,
+        ruleSkill: true,
+        popup: false,
+        superCharlotte: true,
+        charlotte: true,
+        forceunique: true,
+        direct: true,
+        trigger: {
+            source: "damageAfter"
+        },
+        filter: function (event) {
+            return event.hasNature("chenshaA") && event.player.isIn();
+        },
+        logTarget: "player",
+        async content(event, trigger, player) {
+            await trigger.player.loseMaxHp(trigger.num,true);
+            for (let index = 0; index < trigger.num; index++) {
+                if (trigger.player.countEnabledSlot()===0) break;
+                let list = ["equip1", "equip2", "equip3", "equip4", "equip5"].filter(slot =>
+                    trigger.player.hasEnabledSlot(slot)
+                );
+                if (get.is.mountCombined()) {
+                    if (list.includes("equip3") || list.includes("equip4")) {
+                        list.push("equip3_4");
+                    }
+                    list.remove("equip3", "equip4");
+                }
+                if (list.length) {
+                    const slot = list.randomGet();
+                    if (slot === "equip3_4") {
+                        await trigger.player.disableEquip(["equip3", "equip4"]);
+                    } else {
+                        await trigger.player.disableEquip([slot]);
+                    }
+                }
+            }
+        },
+        ai: {
+            effect: {
+                target: function (card, player, target) {
+                    //这里也可以用card?.hasNature?.("fengshaA",player),不过fengshaA是我自己定义的，所以不会出现fengshaA|fire这种情况。
+                    if (card.nature == "chenshaA") {
+                        return 1.4;
                     }
                 },
             },
