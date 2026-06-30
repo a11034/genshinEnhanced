@@ -19,7 +19,7 @@ export function content(config, pack) {
             ],
             // 传说武将
             legend: [
-                'shenlilinghuaA',  'qiqiA', 'youlaA',
+                'shenlilinghuaA', 'qiqiA', 'youlaA', "Seer_gaiya", "Seer_leiyi",
                 'ganyuA', 'puniA', 'xingqiuA', 'shanhugongxinhaiA', 'yunjinA', 'fengyuanwanyeA','keliA'
             ]
         };
