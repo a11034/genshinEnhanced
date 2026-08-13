@@ -4,23 +4,23 @@ export function content(config, pack) {
     //---------------------------------------设置：武将评级------------------------------------------//
     /*武将评级*/
     if (lib.rank) {
-        //设置评级
+       
         // 定义评级与武将列表的映射关系
         const rarityMap = {
             // 平凡武将
             junk: [],
             // 精品武将
-            rare: [],
+            rare: ["YG_qianqing","YG_bingkuai","YG_jianxingmiyue"],
             // 史诗武将
             epic: [
-                'hutaoA', 'ningguangA', 'bachongshenziA', 'keqingA',
+                'hutaoA', 'ningguangA', 'keqingA', 'keliA',
                 'zhongliA', 'wendiA', 'leidianjiangjunA', 'shatangA',
-                'xianglingA', 'anboA', 'banniteA', 'xiaoA', 'naxidaA', "lanyanA", 'shenlilingrenA','huanglongyidouA'
+                'xianglingA', 'anboA', 'banniteA', 'xiaoA', 'naxidaA', "lanyanA", 'shenlilingrenA', 'huanglongyidouA'
             ],
             // 传说武将
             legend: [
-                'shenlilinghuaA', 'qiqiA', 'youlaA', "Seer_gaiya", "Seer_leiyi",
-                'ganyuA', 'puniA', 'xingqiuA', 'shanhugongxinhaiA', 'yunjinA', 'fengyuanwanyeA','keliA'
+                'shenlilinghuaA', 'qiqiA', 'youlaA', "Seer_gaiya", "Seer_leiyi", "babalaA", 'bachongshenziA',
+                'ganyuA', 'puniA', 'xingqiuA', 'shanhugongxinhaiA', 'yunjinA', 'fengyuanwanyeA',
             ]
         };
 
@@ -28,7 +28,7 @@ export function content(config, pack) {
         Object.entries(rarityMap).forEach(([rarityKey, list]) => {
             lib.rank.rarity?.[rarityKey]?.addArray(list);
         });
-       
+
     }
     //---------------------------------------功能：游戏背景图------------------------------------------//
     //自动切换背景图片为上次设置的图片，延迟保证一定兼容性
@@ -154,7 +154,7 @@ export function content(config, pack) {
             },
         },
     };
-    //获得牌限制器
+    //摸牌限制器
     lib.skill._limitedDraw={
         lastDo: true,
         ruleSkill: true,
@@ -172,9 +172,9 @@ export function content(config, pack) {
         },
         logTarget: "player",
         async content(event, trigger, player) {
-            game.log(get.translation(trigger.player)+"摸的牌太多了！禁止暴力摸牌！");
-            trigger.cancel();
-            trigger.player.draw(game.getExtensionConfig("原梗Enhanced", "limitedDraw"));
+            game.log(get.translation(trigger.player) + "摸的牌太多了！禁止暴力摸牌！");
+            trigger.num = game.getExtensionConfig("原梗Enhanced", "limitedDraw");
+            trigger.numFixed = true;
         },
     };
 }

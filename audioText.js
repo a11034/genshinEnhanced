@@ -27,6 +27,8 @@ export const audioText = {
     "#lanyanA:die": "银铃…不响了…",
     "#keliA:die": "可莉…想回家了…",
     "#huanglongyidouA:die": "倒下的姿势…得帅才行…",
+    "#babalaA:die": "大家的声音，听不到呢…",
+
     //技能语音文本
     "#ext:原梗Enhanced/audio/skill/ranhuaA1": "你很有眼光嘛！",
     "#ext:原梗Enhanced/audio/skill/ranhuaA2": "哦？该我出马了？",
@@ -113,5 +115,25 @@ export const audioText = {
     "#ext:原梗Enhanced/audio/skill/zuixianA2": "哟呼——",
     "#ext:原梗Enhanced/audio/skill/nongxianA1": "收获不少，可以拿去换几瓶好酒了！",
     "#ext:原梗Enhanced/audio/skill/nongxianA2": "要我给你做一个一样的么？嘿嘿嘿。",
+    "#ext:原梗Enhanced/audio/skill/fenchuanA1": "秋水三尺。",
+    "#ext:原梗Enhanced/audio/skill/fenchuanA2": "神里流…水囿！",
+    "#ext:原梗Enhanced/audio/skill/jinghuaA1": "不过如此。",
+    "#ext:原梗Enhanced/audio/skill/jinghuaA2": "呵…余兴节目。",
+    "#ext:原梗Enhanced/audio/skill/quanmouA1": "我并不是拘泥于手段的人，无论采取怎样的方式，只要能够取得合适的结果就好。",
+    "#ext:原梗Enhanced/audio/skill/quanmouA2": "暗线已经布置妥当，嗯，差不多该收网了…",
+    "#ext:原梗Enhanced/audio/skill/shanyaoA1": "芭芭拉，闪耀登场~治疗就交给我吧，不会让你失望的！",
+    "#ext:原梗Enhanced/audio/skill/shanyaoA2": "演唱，开始！",
+    "#ext:原梗Enhanced/audio/skill/shanyaoA_draw1": "芭芭拉，冲呀！",
+    "#ext:原梗Enhanced/audio/skill/shanyaoA_draw2": "♪哼哼哼~哼哼~",
+    "#ext:原梗Enhanced/audio/skill/qihuA1": "打起精神来哟！",
+    "#ext:原梗Enhanced/audio/skill/qihuA2": "准备好了吗~",
+    "#ext:原梗Enhanced/audio/skill/qihuA3": "大家加油喔！",
+    "#ext:原梗Enhanced/audio/skill/lianyinA1": "我的愿望，是给身边的大家带来笑容！",
+    "#ext:原梗Enhanced/audio/skill/lianyinA2": "是大家脸上的笑容，一直在支持我。",
+    "#ext:原梗Enhanced/audio/skill/chunxinA1": "呼…呼…没问题！",
+    "#ext:原梗Enhanced/audio/skill/chunxinA2": "我没关系的！",
+    "#ext:原梗Enhanced/audio/skill/chunxinA_save1": "一定，要让大家恢复健康。",
+    "#ext:原梗Enhanced/audio/skill/chunxinA_save2": "让我为你治疗，拜托了！",
+
 };
 
